@@ -11,8 +11,9 @@ This app allows the user to input a text message, which will then be displayed o
 
 import os
 import html
+import random
 
-from flask import Flask, request
+from flask import Flask, request, session
 
 from model import Message
 
@@ -27,11 +28,19 @@ def home():
     Code for home page of message board app.
     """
 
-    if request.method == 'POST':
-        m = Message(content=request.form['content'])
-        m.save()
+    # If the session does not include a CSRF token, add one
+    if "csrf_token" not in session:
+        session["csrf_token"] = str(random.randint(10000000, 99999999))
 
-    body = """
+    if request.method == 'POST':
+
+        # Only save the message if the form submission includes a CSRF token and it matches the
+        # token in the session
+        if request.form.get("csrf_token", None) == session["csrf_token"]:
+            m = Message(content=request.form['content'])
+            m.save()
+
+    body = f"""
         <html>
         <body>
         <h1>Class Message Board</h1>
@@ -39,6 +48,7 @@ def home():
         <form method="POST">
             <textarea name="content"></textarea>
             <input type="submit" value="Submit">
+            <input type="hidden" name="csrf_token" value={session["csrf_token"]}
         </form>
 
         <h2>Wisdom From Your Fellow Classmates</h2>
