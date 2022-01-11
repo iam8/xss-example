@@ -10,6 +10,7 @@ This app allows the user to input a text message, which will then be displayed o
 """
 
 import os
+import html
 
 from flask import Flask, request
 
@@ -48,7 +49,8 @@ def home():
             <div class="message">
             {}
             </div>
-            """.format(m.content.replace("<", "&lt;").replace(">", "&gt;"))
+            """.format(html.escape(m.content))
+            #.format(m.content.replace("<", "&lt;").replace(">", "&gt;"))
 
     return body
 
