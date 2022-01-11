@@ -55,12 +55,12 @@ def home():
         """
 
     for m in Message.select():
-        body += """
+        body += f"""
             <div class="message">
-            {}
+            {html.escape(m.content)}
             </div>
-            """.format(html.escape(m.content))
-            #.format(m.content.replace("<", "&lt;").replace(">", "&gt;"))
+            """
+            # m.content.replace("<", "&lt;").replace(">", "&gt;")
 
     return body
 
