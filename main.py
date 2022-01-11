@@ -48,7 +48,7 @@ def home():
             <div class="message">
             {}
             </div>
-            """.format(m.content)
+            """.format(m.content.replace("<", "&lt;'").replace(">", "&gt;"))
 
     return body
 
